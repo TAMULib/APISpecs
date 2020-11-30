@@ -64,7 +64,7 @@ openAPIPaths.forEach(openAPIPath => {
   const specName = specFileName.split('.')[0];
   const specDirPath = `${SPEC_OUTPUT_PATH}/${specName}`;
   const specPath = `${specDirPath}/index.html`;
-  fs.ensureDir(specDirPath);
+  fs.ensureDirSync(specDirPath);
   fs.writeFile(specPath, compiledTemplate);
 
   const listEntry = listMemberTemplate
