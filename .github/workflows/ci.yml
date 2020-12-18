@@ -40,4 +40,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           email: huff@library.tamu.edu
-          build_dir: _site
+          build_dir: .
