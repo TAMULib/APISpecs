@@ -38,7 +38,7 @@ openAPIPaths.forEach(openAPIPath => {
 
 // Rewrite the `/index.html` list of links to contain a link to
 // spec
-const compiledMainIndexTemplate = mainIndexTemplate.replace(API_SPECS_LIST, apiSpecsList.join())
+const compiledMainIndexTemplate = mainIndexTemplate.replace(API_SPECS_LIST, apiSpecsList.join(''))
 
 fs.writeFileSync('APISpecs/index.html', compiledMainIndexTemplate);
 fs.ensureDir('APISpecs/openapi-docs');
