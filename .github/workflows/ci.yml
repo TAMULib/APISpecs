@@ -38,4 +38,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           email: huff@library.tamu.edu
-          build_dir: .
+          build_dir: APISpecs
