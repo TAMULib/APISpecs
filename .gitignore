@@ -1,5 +1,5 @@
 node_modules/
-spec/
+APISpecs/
 index.html
 
 package-lock.json
