@@ -1,7 +1,7 @@
 const fs = require('fs-extra');
 const glob = require("glob");
 
-const SPEC_OUTPUT_PATH = 'specs';
+const SPEC_OUTPUT_PATH = 'APISpecs/specs';
 const OPENAPI_DOC_PATH = '{{spec-path}}';
 const specTemplate = fs.readFileSync('./scripts/templates/spec-index.html', 'utf8')
 
@@ -40,6 +40,8 @@ openAPIPaths.forEach(openAPIPath => {
 // spec
 const compiledMainIndexTemplate = mainIndexTemplate.replace(API_SPECS_LIST, apiSpecsList.join())
 
-fs.writeFile('index.html', compiledMainIndexTemplate);
+fs.writeFileSync('APISpecs/index.html', compiledMainIndexTemplate);
+fs.ensureDir('APISpecs/openapi-docs');
+fs.copySync('openapi-docs', 'APISpecs/openapi-docs');
 
 console.log('Build Complete');
