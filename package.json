@@ -5,6 +5,8 @@
   "main": "echo \"Error: no entrypoint specified\" && exit 1",
   "scripts": {
     "build": "node scripts/build.js",
+    "clean": "rimraf APISpecs",
+    "start": "static-server APISpecs",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -27,6 +29,9 @@
   },
   "dependencies": {
     "fs-extra": "^9.0.1",
-    "glob": "^7.1.6"
+    "glob": "^7.1.6",
+    "rimraf": "^3.0.2",
+    "serve-static": "^1.14.1",
+    "static-server": "^2.2.1"
   }
 }
