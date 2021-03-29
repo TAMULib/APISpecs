@@ -18,6 +18,7 @@ paths:
       summary: "Get Holdings by the given Bibliographic ID."
       description: |-
         Retrieve raw Catalog Holdings information, with Location Items, for the given Bibliographic ID.
+      deprecated: true
       parameters:
         - name: "catalogName"
           in: "query"
@@ -208,6 +209,7 @@ paths:
       summary: "Get a Holding by the given Bibliographic ID and Holding ID."
       description: |-
         Retrieve raw Catalog Holdings information, with Location Items, for the given Bibliographic ID and Holding ID.
+      deprecated: true
       parameters:
         - name: "catalogName"
           in: "query"
