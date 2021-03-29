@@ -2,12 +2,21 @@ openapi: "3.0.0"
 info:
   title: Catalog Service API
   version: 2.2.0
+
+tags:
+  - name: "Catalog Access"
+    description: "Interface with Holdings data."
+  - name: "Patron"
+    description: "Interface with Patron data."
+
 paths:
   /catalog-access/get-holdings:
     get:
-      operationId: getHoldings
-      summary: Get Holdings by the given Bibliographic ID
-      description: Retrieve raw Catalog Holdings information, with Location Items, for the given Bibliographic ID.
+      tags:
+        - "Catalog Access"
+      operationId: "getHoldings"
+      summary: "Get Holdings by the given Bibliographic ID."
+      description: "Retrieve raw Catalog Holdings information, with Location Items, for the given Bibliographic ID."
       parameters:
         - name: "catalogName"
           in: "query"
@@ -24,12 +33,11 @@ paths:
             type: "string"
       responses:
         '200':
-          description: |-
-            200 response
+          description: "200 response"
           content:
             application/json:
               examples:
-                multiple holdings:
+                "Multiple Holdings":
                   value:
                     {
                       "meta": {
@@ -191,3 +199,402 @@ paths:
                         ]
                       }
                     }
+  /catalog-access/get-holding:
+    get:
+      tags:
+        - "Catalog Access"
+      operationId: "getHolding"
+      summary: "Get a Holding by the given Bibliographic ID and Holding ID."
+      description: "Retrieve raw Catalog Holdings information, with Location Items, for the given Bibliographic ID and Holding ID."
+      parameters:
+        - name: "catalogName"
+          in: "query"
+          description: "Name of the catalog service to use."
+          required: false
+          schema:
+            type: "string"
+            default: "evans"
+        - name: "bibId"
+          in: "query"
+          description: "The Bibliographic ID."
+          required: true
+          schema:
+            type: "string"
+        - name: "holdingId"
+          in: "query"
+          description: "The Holding ID."
+          required: true
+          schema:
+            type: "string"
+      responses:
+        '200':
+          description: "200 response"
+          content:
+            application/json:
+              examples:
+                "Single Holding":
+                  value:
+                    {
+                      "meta": {
+                        "status": "SUCCESS",
+                        "action": null,
+                        "message": "Your request was successful",
+                        "id": null
+                      },
+                      "payload": {
+                        "CatalogHolding": {
+                          "marcRecordLeader": "00825cam a2200289   4500",
+                          "mfhd": "1234",
+                          "issn": null,
+                          "isbn": "0000000001",
+                          "title": "Land of Tomorrow",
+                          "author": "Doe, John.",
+                          "publisher": "Imaginary Press,",
+                          "place": "New York :",
+                          "year": "1900",
+                          "genre": "book",
+                          "fallbackLocationCode": "stk",
+                          "edition": null,
+                          "oclc": "(OCoLC)00000001",
+                          "recordId": "12345",
+                          "callNumber": "XX000 1900.C01",
+                          "largeVolume": false,
+                          "catalogItems": {
+                            "http://example.com:80/vxws/record/1234567/items/789": {
+                              "year": "",
+                              "caption": "",
+                              "itemNote": "0",
+                              "pieceCount": "1",
+                              "enumeration": "",
+                              "createLocation": "",
+                              "tempType": "0",
+                              "patronGroupCode": "",
+                              "holdLocation": "",
+                              "modifyOperId": "",
+                              "modifyDate": "1999-12-08",
+                              "itemBarcode": "A00000000001",
+                              "mediaType": "0",
+                              "tempDesc": "",
+                              "itemStatusCode": "2",
+                              "historicalCharges": "1",
+                              "historicalReserveCharges": "0",
+                              "locationcode": "stk",
+                              "tempLocation": "",
+                              "permLocation": "Library Stacks",
+                              "firstName": "PermAccess",
+                              "modifyLocation": "",
+                              "reserveCharges": "0",
+                              "spineLabel": "",
+                              "lastName": "Newton",
+                              "typeDesc": "normal",
+                              "libraryId": "1",
+                              "clusterId": "1",
+                              "historicalBrowses": "1",
+                              "holdsPlaced": "0",
+                              "lastTrans": "2020-08-09 14:00:01",
+                              "itemStatus": "Message for holdings charged item",
+                              "onReserve": "N",
+                              "copy": "c. 0",
+                              "itemDueDate": "2024-08-31 23:59:00",
+                              "createOperId": "",
+                              "createDate": "",
+                              "bibId": "1234567",
+                              "amount": "0.00",
+                              "historicalBookings": "0",
+                              "chron": "",
+                              "itemStatusDate": "2020-08-17 14:17:36",
+                              "todayDate": "2020-12-17 13:02:33",
+                              "mediadesc": "",
+                              "typeCode": "4",
+                              "callNumber": "XX000 1900.C01",
+                              "shortLoanChgs": "0",
+                              "freeText": "",
+                              "permLocationcode": "stk",
+                              "location": "Library Stacks",
+                              "recallsPlaced": "0"
+                            }
+                          },
+                          "multiVolume": false
+                        }
+                      }
+                    }
+  /patron/{uin}/block:
+    get:
+      tags:
+        - "Patron"
+      operationId: "getPatronBlock"
+      summary: "Get Blocked Status of a Patron."
+      description: "Retrieve whether or not a given Patron is blocked."
+      parameters:
+        - name: "catalogName"
+          in: "query"
+          description: "Name of the catalog service to use."
+          required: false
+          schema:
+            type: "string"
+            default: "folio"
+        - name: "uin"
+          in: "path"
+          description: "The Patron UIN. In FOLIO, this is the externalSystemId."
+          required: true
+          schema:
+            type: "string"
+      responses:
+        '200':
+          description: "200 response"
+          content:
+            text/plain:
+              examples:
+                "Patron Blocked":
+                  value: true
+                "Patron Allowed":
+                  value: false
+        '401':
+          description: "Bad Catalog credentials."
+        '404':
+          description: "When unable to find the Patron."
+        '500':
+          description: "Server Error, such as when service failed retrieve automated block status for user from the requested Catalog Service."
+  /patron/{uin}/fines:
+    get:
+      tags:
+        - "Patron"
+      operationId: "getPatronFines"
+      summary: "Retrieve Patron's Fees and Fines."
+      description: |-
+        Retrieve all Fees and Fines for a given Patron.
+        A Fee or a Fine may also be called a Charge.
+      parameters:
+        - name: "catalogName"
+          in: "query"
+          description: "Name of the catalog service to use."
+          required: false
+          schema:
+            type: "string"
+            default: "folio"
+        - name: "uin"
+          in: "path"
+          description: "The Patron UIN. In FOLIO, this is the externalSystemId."
+          required: true
+          schema:
+            type: "string"
+      responses:
+        '200':
+          description: |-
+            200 response
+          content:
+            application/json:
+              examples:
+                Patron Fees/Fines:
+                  value: [
+                    {
+                      "fineId": "e2791487-9962-4e67-98dd-99f8bc89e3e4",
+                      "itemId": "13c4044e-9ecc-3c90-93df-4a58d6e0f597",
+                      "instanceId": "d42f4d83-a5ab-38f4-b396-1a43a471b86f",
+                      "amount": 1,
+                      "fineType": "charge",
+                      "fineDate": 1566308501000,
+                      "itemTitle": "Bill & Ted's excellent adventure / an Orion Pictures release ; Nelson Entertainment presents an Interscope Communications production ; in association with Soisson/Murphey Productions ;  written by Chris Matheson & Ed Solomon ; produced by Scott Kroopf, Michael S. Murphey, Joel Soisson ; directed by Stephen Herek."
+                    }
+                  ]
+        '401':
+          description: "Bad Catalog credentials."
+        '404':
+          description: "When unable to find the Patron."
+        '500':
+          description: |-
+            Internal Server Error, such as finding multiple users with the same externalSystemId in the requested Catalog Service.
+            This may also be returned when the Catalog Service returns bad data that is considered unacceptable.
+  /patron/{uin}/holds:
+    get:
+      tags:
+        - "Patron"
+      operationId: "getPatronHolds"
+      summary: "Retrieve Patron's Hold Requests."
+      description: "Retrieve all Hold Requests for a given Patron."
+      parameters:
+        - name: "catalogName"
+          in: "query"
+          description: "Name of the catalog service to use."
+          required: false
+          schema:
+            type: "string"
+            default: "folio"
+        - name: "uin"
+          in: "path"
+          description: "The Patron UIN. In FOLIO, this is the externalSystemId."
+          required: true
+          schema:
+            type: "string"
+      responses:
+        '200':
+          description: "200 response"
+          content:
+            application/json:
+              examples:
+                "Patron Holds":
+                  value: [
+                    {
+                      "requestId": "8bbac557-d66f-4571-bbbf-47a107cc1589",
+                      "itemId": "26670295-716a-4f84-8f65-2ef31707c017",
+                      "instanceId": "255f82f3-5b1b-4239-93e4-ec6acf03ad9d",
+                      "requestType": "Recall",
+                      "itemTitle": "I Want to Hold Your Hand",
+                      "statusText": "Open - Not yet filled",
+                      "pickupServicePoint": "Miller General",
+                      "queuePosition": 1,
+                      "expirationDate": 1538468190000
+                    }
+                  ]
+        '401':
+          description: "Bad Catalog credentials."
+        '404':
+          description: "When unable to find the Patron."
+        '500':
+          description: |-
+            Internal Server Error, such as finding multiple users with the same externalSystemId in the requested Catalog Service.
+            This may also be returned when the Catalog Service returns bad data that is considered unacceptable.
+  /patron/{uin}/holds/{requestId}/cancel:
+    post:
+      tags:
+        - "Patron"
+      operationId: "postPatronHoldRequestCancel"
+      summary: "Cancel Patron's Hold Request."
+      description: "Cancel a given Hold Request for a given Patron."
+      parameters:
+        - name: "catalogName"
+          in: "query"
+          description: "Name of the catalog service to use."
+          required: false
+          schema:
+            type: "string"
+            default: "folio"
+        - name: "uin"
+          in: "path"
+          description: "The Patron UIN. In FOLIO, this is the externalSystemId."
+          required: true
+          schema:
+            type: "string"
+        - name: "requestId"
+          in: "path"
+          description: "The Hold Request ID."
+          required: true
+          schema:
+            type: "string"
+      responses:
+        '204':
+          description: "On success, there should be no content returned."
+        '401':
+          description: "Bad Catalog credentials."
+        '404':
+          description: "When unable to find the Patron or the Hold Request."
+        '500':
+          description: |-
+            Internal Server Error, such as finding multiple users with the same externalSystemId in the requested Catalog Service.
+            This may also be returned when the Catalog Service returns bad data that is considered unacceptable.
+  /patron/{uin}/loans:
+    get:
+      tags:
+        - "Patron"
+      operationId: "getPatronLoans"
+      summary: "Retrieve Patron's Loans."
+      description: "Retrieve all Loans for a given Patron."
+      parameters:
+        - name: "catalogName"
+          in: "query"
+          description: "Name of the catalog service to use."
+          required: false
+          schema:
+            type: "string"
+            default: "folio"
+        - name: "uin"
+          in: "path"
+          description: "The Patron UIN. In FOLIO, this is the externalSystemId."
+          required: true
+          schema:
+            type: "string"
+      responses:
+        '200':
+          description: "200 response"
+          content:
+            application/json:
+              examples:
+                "Patron Loans":
+                  value: [
+                    {
+                      "loanId": "9b9b592a-1b4c-43b4-a91f-901d4ec9d3d6",
+                      "itemId": "40053ccb-fd0c-304b-9547-b2fc06f34d3e",
+                      "instanceId": "2422160d-23c4-356b-ad1c-44d90fc1320b",
+                      "instanceHrid": "in1",
+                      "loanDate": 1297982768000,
+                      "loanDueDate": 1633744800000,
+                      "overdue": false,
+                      "title": "An ontology of consciousness / by Ralph Ellis.",
+                      "author": "Ellis, Ralph D"
+                    }
+                  ]
+        '401':
+          description: "Bad Catalog credentials."
+        '404':
+          description: "When unable to find the Patron or the Hold Request."
+        '500':
+          description: |-
+            Internal Server Error, such as finding multiple users with the same externalSystemId in the requested Catalog Service.
+            This may also be returned when the Catalog Service returns bad data that is considered unacceptable.
+  /patron/{uin}/renew/{itemId}:
+    post:
+      tags:
+        - "Patron"
+      operationId: "renewPatronLoans"
+      summary: "Renew Patron's Loans by Item ID."
+      description: |-
+        Renew all Loans for a given Patron associated with the given Item.
+        The renewed Loan is provided in the response.
+      parameters:
+        - name: "catalogName"
+          in: "query"
+          description: "Name of the catalog service to use."
+          required: false
+          schema:
+            type: "string"
+            default: "folio"
+        - name: "uin"
+          in: "path"
+          description: "The Patron UIN. In FOLIO, this is the externalSystemId."
+          required: true
+          schema:
+            type: "string"
+        - name: "itemId"
+          in: "path"
+          description: "The Item ID of the Item associated with the Loan."
+          required: true
+          schema:
+            type: "string"
+      responses:
+        '200':
+          description: "200 response"
+          content:
+            application/json:
+              examples:
+                "Patron Loans":
+                  value: [
+                    {
+                      "loanId": "9b9b592a-1b4c-43b4-a91f-901d4ec9d3d6",
+                      "itemId": "40053ccb-fd0c-304b-9547-b2fc06f34d3e",
+                      "instanceId": "2422160d-23c4-356b-ad1c-44d90fc1320b",
+                      "instanceHrid": "in1",
+                      "loanDate": 1297982768000,
+                      "loanDueDate": 1633744800000,
+                      "overdue": false,
+                      "title": "An ontology of consciousness / by Ralph Ellis.",
+                      "author": "Ellis, Ralph D"
+                    }
+                  ]
+        '401':
+          description: "Bad Catalog credentials."
+        '404':
+          description: "When unable to find the Patron or the Hold Request."
+        '500':
+          description: |-
+            Internal Server Error, such as finding multiple users with the same externalSystemId in the requested Catalog Service.
+            This may also be returned when the Catalog Service returns bad data that is considered unacceptable.
