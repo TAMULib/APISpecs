@@ -16,7 +16,8 @@ paths:
         - "Catalog Access"
       operationId: "getHoldings"
       summary: "Get Holdings by the given Bibliographic ID."
-      description: "Retrieve raw Catalog Holdings information, with Location Items, for the given Bibliographic ID."
+      description: |-
+        Retrieve raw Catalog Holdings information, with Location Items, for the given Bibliographic ID.
       parameters:
         - name: "catalogName"
           in: "query"
@@ -205,7 +206,8 @@ paths:
         - "Catalog Access"
       operationId: "getHolding"
       summary: "Get a Holding by the given Bibliographic ID and Holding ID."
-      description: "Retrieve raw Catalog Holdings information, with Location Items, for the given Bibliographic ID and Holding ID."
+      description: |-
+        Retrieve raw Catalog Holdings information, with Location Items, for the given Bibliographic ID and Holding ID.
       parameters:
         - name: "catalogName"
           in: "query"
@@ -324,7 +326,8 @@ paths:
         - "Patron"
       operationId: "getPatronBlock"
       summary: "Get Blocked Status of a Patron."
-      description: "Retrieve whether or not a given Patron is blocked."
+      description: |-
+        Retrieve whether or not a given Patron is blocked.
       parameters:
         - name: "catalogName"
           in: "query"
@@ -354,7 +357,7 @@ paths:
         '404':
           description: "When unable to find the Patron."
         '500':
-          description: "Server Error, such as when service failed retrieve automated block status for user from the requested Catalog Service."
+          description: "Server Error, such as when service failed retrieve automated block status for user from the given Catalog Service."
   /patron/{uin}/fines:
     get:
       tags:
@@ -403,7 +406,7 @@ paths:
           description: "When unable to find the Patron."
         '500':
           description: |-
-            Internal Server Error, such as finding multiple users with the same externalSystemId in the requested Catalog Service.
+            Internal Server Error, such as finding multiple users with the same externalSystemId in the given Catalog Service.
             This may also be returned when the Catalog Service returns bad data that is considered unacceptable.
   /patron/{uin}/holds:
     get:
@@ -415,7 +418,8 @@ paths:
       parameters:
         - name: "catalogName"
           in: "query"
-          description: "Name of the catalog service to use."
+          description: |-
+            Name of the catalog service to use.
           required: false
           schema:
             type: "string"
@@ -452,7 +456,7 @@ paths:
           description: "When unable to find the Patron."
         '500':
           description: |-
-            Internal Server Error, such as finding multiple users with the same externalSystemId in the requested Catalog Service.
+            Internal Server Error, such as finding multiple users with the same externalSystemId in the given Catalog Service.
             This may also be returned when the Catalog Service returns bad data that is considered unacceptable.
   /patron/{uin}/holds/{requestId}/cancel:
     post:
@@ -460,7 +464,8 @@ paths:
         - "Patron"
       operationId: "postPatronHoldRequestCancel"
       summary: "Cancel Patron's Hold Request."
-      description: "Cancel a given Hold Request for a given Patron."
+      description: |-
+        Cancel a given Hold Request for a given Patron.
       parameters:
         - name: "catalogName"
           in: "query"
@@ -490,7 +495,7 @@ paths:
           description: "When unable to find the Patron or the Hold Request."
         '500':
           description: |-
-            Internal Server Error, such as finding multiple users with the same externalSystemId in the requested Catalog Service.
+            Internal Server Error, such as finding multiple users with the same externalSystemId in the given Catalog Service.
             This may also be returned when the Catalog Service returns bad data that is considered unacceptable.
   /patron/{uin}/loans:
     get:
@@ -498,7 +503,9 @@ paths:
         - "Patron"
       operationId: "getPatronLoans"
       summary: "Retrieve Patron's Loans."
-      description: "Retrieve all Loans for a given Patron."
+      description: |-
+        Retrieve all Loans for a given Patron.
+        A Loan may also be called a Loan Item or a Charged Item.
       parameters:
         - name: "catalogName"
           in: "query"
@@ -539,7 +546,7 @@ paths:
           description: "When unable to find the Patron or the Hold Request."
         '500':
           description: |-
-            Internal Server Error, such as finding multiple users with the same externalSystemId in the requested Catalog Service.
+            Internal Server Error, such as finding multiple users with the same externalSystemId in the given Catalog Service.
             This may also be returned when the Catalog Service returns bad data that is considered unacceptable.
   /patron/{uin}/renew/{itemId}:
     post:
@@ -549,6 +556,8 @@ paths:
       summary: "Renew Patron's Loans by Item ID."
       description: |-
         Renew all Loans for a given Patron associated with the given Item.
+        A Loan may also be called a Loan Item or a Charged Item.
+        This endpoint renews by the itemId, instead of by the loanId.
         The renewed Loan is provided in the response.
       parameters:
         - name: "catalogName"
@@ -596,5 +605,5 @@ paths:
           description: "When unable to find the Patron or the Hold Request."
         '500':
           description: |-
-            Internal Server Error, such as finding multiple users with the same externalSystemId in the requested Catalog Service.
+            Internal Server Error, such as finding multiple users with the same externalSystemId in the given Catalog Service.
             This may also be returned when the Catalog Service returns bad data that is considered unacceptable.
