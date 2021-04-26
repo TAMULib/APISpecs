@@ -70,6 +70,8 @@ paths:
       responses:
         "200":
           description: "Request successful"
+          schema:
+            $ref: "#/definitions/Leave"
         "400":
           description: "The request was invalid"
         "500":
@@ -129,6 +131,8 @@ paths:
       responses:
         "200":
           description: "Request successful"
+          schema:
+            $ref: "#/definitions/Leave"
         "400":
           description: "The request was invalid"
         "404":
@@ -247,43 +251,36 @@ paths:
           description: "The requested leave is an unprocessable entity"
         "500":
           description: "Internal Server Error"
-  /pet/findByStatus:
+  /employees/{uin}:
     get:
       tags:
-      - "pet"
-      summary: "Finds Pets by status"
-      description: "Multiple status values can be provided with comma separated strings"
-      operationId: "findPetsByStatus"
+        - "employees"
+      summary: "Retrieves an employee by UIN"
+      description: "Retrieves an employee by UIN"
+      operationId: "getEmployee"
+      consumes:
+      - "application/json"
       produces:
-      - "application/xml"
       - "application/json"
       parameters:
-      - name: "status"
-        in: "query"
-        description: "Status values that need to be considered for filter"
-        required: true
-        type: "array"
-        items:
+        - name: "uin"
+          in: "path"
+          required: true
           type: "string"
-          enum:
-          - "available"
-          - "pending"
-          - "sold"
-          default: "available"
-        collectionFormat: "multi"
+          format: "uuid"
       responses:
         "200":
-          description: "successful operation"
+          description: "Employee Found"
           schema:
-            type: "array"
-            items:
-              $ref: "#/definitions/Leave"
-        "400":
-          description: "Invalid status value"
-      security:
-      - petstore_auth:
-        - "write:pets"
-        - "read:pets"
+            $ref: "#/definitions/Person"
+        "401":
+          description: "You are not authorized to retrieve an employee."
+        "403":
+          description: "You are forbidden to retrieve an employee."
+        "404":
+          description: "Employee Not Found"
+        "500":
+          description: "Internal Server Error"
 securityDefinitions:
   petstore_auth:
     type: "oauth2"
@@ -419,16 +416,45 @@ definitions:
         format: "uuid"
       description:
         type: "string"
-  ApiResponse:
+  Person:
     type: "object"
     properties:
-      code:
+      NetId:
+        type: "string"
+      UIN:
         type: "integer"
         format: "int32"
-      type:
+      Role:
         type: "string"
-      message:
+        enum: [EMPLOYEE, WORK_ADMIN, HR_ADMIN]
+      Department:
         type: "string"
+      Supervisor:
+        $ref: "#/definitions/Person"
+      Reports:
+        type: "array"
+        items:
+          $ref: "#/definitions/Person"
+  PersonProfile:
+    type: "object"
+    properties:
+      UIN:
+        type: "integer"
+        format: "int32"
+      futureLeaveColor:
+        type: "string"
+      pastLeaveColor:
+        type: "string"
+      preferredColors:
+        type: "array"
+        items:
+          type: "string"
+      preferDayDisplay:
+        type: "boolean"
+      ChosenReports:
+        type: "array"
+        items:
+          $ref: "#/definitions/Person"
 externalDocs:
   description: "Find out more about Swagger"
   url: "http://swagger.io"
