@@ -111,6 +111,30 @@ paths:
           description: "The requested leave is an unprocessable entity"
         "500":
           description: "Internal Server Error"
+    get:
+      tags:
+        - "leave"
+      summary: "Get a request for leave by id"
+      description: "Get a list of requests for leave."
+      operationId: "getLeaveById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of leave request to be updated"
+        required: true
+        type: "string"
+        format: "uuid"
+      responses:
+        "200":
+          description: "Request successful"
+        "400":
+          description: "The request was invalid"
+        "404":
+          description: "The leave request was not found"
+        "500":
+          description: "Internal Server Error"
   /pet/findByStatus:
     get:
       tags:
