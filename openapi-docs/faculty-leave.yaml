@@ -43,6 +43,37 @@ paths:
           description: "The requested leave is an unprocessable entity"
         "500":
           description: "Internal Server Error"
+    get:
+      tags:
+      - "leave"
+      summary: "Get a list of requests for leave."
+      description: "Get a list of requests for leave."
+      operationId: "getLeave"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "ids"
+        in: "query"
+        description: "Comma seperated string of ids to return"
+        required: false
+        type: "string"
+      - name: "departmentName"
+        in: "query"
+        description: "The name of the department to retrieve requests for"
+        required: false
+        type: "string"
+      - name: "timeframe"
+        in: "query"
+        description: "The window of time for requests"
+        required: false
+        type: "string"
+      responses:
+        "200":
+          description: "Request successful"
+        "400":
+          description: "The request was invalid"
+        "500":
+          description: "Internal Server Error"
   /leave/{id}:
     put:
       tags:
@@ -69,7 +100,7 @@ paths:
           $ref: "#/definitions/Leave"
       responses:
         "204":
-          description: "Leave Request Update"
+          description: "Leave Request Updated"
         "401":
           description: "You are not authorized to create a leave request"
         "403":
