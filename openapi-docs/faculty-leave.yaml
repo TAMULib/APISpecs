@@ -1,4 +1,4 @@
-swagger: "2.0"
+openapi: "3.0.0"
 info:
   description: "The API Specefication for Texas A&M Libraries FacultyLeave Application"
   version: "1.0.0"
@@ -21,17 +21,13 @@ paths:
       summary: "Add a new request for leave."
       description: "Add a new request for leave."
       operationId: "addLeave"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "body"
-        in: "body"
+      requestBody:
         description: "Leave object describing the requested leave."
         required: true
-        schema:
-          $ref: "#/definitions/Leave"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Leave"
       responses:
         "201":
           description: "Leave Request Created"
@@ -258,8 +254,6 @@ paths:
       summary: "Retrieves an employee by UIN"
       description: "Retrieves an employee by UIN"
       operationId: "getEmployee"
-      consumes:
-      - "application/json"
       produces:
       - "application/json"
       parameters:
@@ -281,180 +275,267 @@ paths:
           description: "Employee Not Found"
         "500":
           description: "Internal Server Error"
+  /employees/{uin}/leave:
+    get:
+      tags:
+        - "employees"
+      summary: "Retrieves an employee's requested leave by UIN"
+      description: "Retrieves an employee's requested leave by UIN"
+      operationId: "getEmployeeLeave"
+      produces:
+      - "application/json"
+      parameters:
+        - name: "uin"
+          in: "path"
+          required: true
+          type: "string"
+          format: "uuid"
+      responses:
+        "200":
+          description: "Employee Leave Found"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Leave"
+        "401":
+          description: "You are not authorized to retrieve an employee's leave."
+        "403":
+          description: "You are forbidden to retrieve an employee's leave."
+        "404":
+          description: "Employee Not Found"
+        "500":
+          description: "Internal Server Error"
+  /employees/{uin}/history:
+    get:
+      tags:
+        - "employees"
+      summary: "Retrieves an employee's leave history by UIN"
+      description: "Retrieves an employee's leave history by UIN"
+      operationId: "getEmployeeHistory"
+      produces:
+      - "application/json"
+      parameters:
+        - name: "uin"
+          in: "path"
+          required: true
+          type: "string"
+          format: "uuid"
+        - name: "timeframe"
+          in: "query"
+          description: "The window of time for requests"
+          required: false
+          type: "string"
+      responses:
+        "200":
+          description: "Employee Leave History Found"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Leave"
+        "401":
+          description: "You are not authorized to retrieve an employee's leave history."
+        "403":
+          description: "You are forbidden to retrieve an employee's leave history."
+        "404":
+          description: "Employee Not Found"
+        "500":
+          description: "Internal Server Error"
+  /employees/{uin}/balance:
+    get:
+      tags:
+        - "employees"
+      summary: "Retrieves an employee's leave balance by UIN"
+      description: "Retrieves an employee's leave balance by UIN"
+      operationId: "getEmployeeLeaveBalance"
+      produces:
+      - "application/json"
+      parameters:
+        - name: "uin"
+          in: "path"
+          required: true
+          type: "string"
+          format: "uuid"
+      responses:
+        "200":
+          description: "Employee Leave History Found"
+          schema:
+            $ref: "#/definitions/LeaveBalance"
+        "401":
+          description: "You are not authorized to retrieve an employee's leave balance."
+        "403":
+          description: "You are forbidden to retrieve an employee's leave balance."
+        "404":
+          description: "Employee Not Found"
+        "500":
+          description: "Internal Server Error"
+  /employees/{uin}/settings:
+    get:
+      tags:
+        - "employees"
+      summary: "Retrieves an employee's settings"
+      description: "Retrieves an employee's settings"
+      operationId: "getEmployeeSettings"
+      produces:
+      - "application/json"
+      parameters:
+        - name: "uin"
+          in: "path"
+          required: true
+          type: "string"
+          format: "uuid"
+      responses:
+        "200":
+          description: "Employee Settings Found"
+          schema:
+            $ref: "#/definitions/PersonProfile"
+        "401":
+          description: "You are not authorized to retrieve an employee's settings."
+        "403":
+          description: "You are forbidden to retrieve an employee's settings."
+        "404":
+          description: "Employee Not Found"
+        "500":
+          description: "Internal Server Error"
+    put:
+      tags:
+        - "employees"
+      summary: "Updates an employee's settings"
+      description: "Updates an employee's settings"
+      operationId: "putEmployeeSettings"
+      consumes:
+      - "application/json"
+      parameters:
+        - name: "uin"
+          in: "path"
+          required: true
+          type: "string"
+          format: "uuid"
+        - name: "settings"
+          in: "body"
+          required: true
+          schema:
+            $ref: "#/components/schemas/PersonProfile"
+      responses:
+        "204":
+          description: "Employee Settings Updated"
+        "400":
+          description: "The settings object is invalid."
+        "401":
+          description: "You are not authorized to update an employee's settings."
+        "403":
+          description: "You are forbidden to update an employee's settings."
+        "404":
+          description: "Employee Not Found"
+        "422":
+          description: "The settings object is an unprocessable entity"
+        "500":
+          description: "Internal Server Error"
 securityDefinitions:
   petstore_auth:
-    type: "oauth2"
+    type: "basic"
     authorizationUrl: "http://petstore.swagger.io/oauth/dialog"
     flow: "implicit"
     scopes:
       write:pets: "modify pets in your account"
       read:pets: "read your pets"
-  api_key:
-    type: "apiKey"
-    name: "api_key"
-    in: "header"
-definitions:
-  Order:
-    type: "object"
-    properties:
-      id:
-        type: "integer"
-        format: "int64"
-      petId:
-        type: "integer"
-        format: "int64"
-      quantity:
-        type: "integer"
-        format: "int32"
-      shipDate:
-        type: "string"
-        format: "date-time"
-      status:
-        type: "string"
-        description: "Order Status"
-        enum:
-        - "placed"
-        - "approved"
-        - "delivered"
-      complete:
-        type: "boolean"
-        default: false
-    xml:
-      name: "Order"
-  Category:
-    type: "object"
-    properties:
-      id:
-        type: "integer"
-        format: "int64"
-      name:
-        type: "string"
-    xml:
-      name: "Category"
-  User:
-    type: "object"
-    properties:
-      id:
-        type: "integer"
-        format: "int64"
-      username:
-        type: "string"
-      firstName:
-        type: "string"
-      lastName:
-        type: "string"
-      email:
-        type: "string"
-      password:
-        type: "string"
-      phone:
-        type: "string"
-      userStatus:
-        type: "integer"
-        format: "int32"
-        description: "User Status"
-    xml:
-      name: "User"
-  Tag:
-    type: "object"
-    properties:
-      id:
-        type: "integer"
-        format: "int64"
-      name:
-        type: "string"
-    xml:
-      name: "Tag"
-  Leave:
-    type: "object"
-    required:
-    - "employeeUIN"
-    - "supervisorUIN"
-    - "description"
-    - "title"
-    - "isApproved"
-    - "days"
-    properties:
-      employeeUIN:
-        type: "string"
-        format: "uuid"
-      supervisorUIN:
-        type: "integer"
-        format: "int64"
-      description:
-        type: "string"
-        example: "Summer Vacation"
-      title:
-        type: "string"
-        example: "June Leave"
-      isApproved:
-        type: "boolean"
-      days:
-        type: "array"
-        items:
-          $ref: "#/definitions/LeaveDay"
-  LeaveDay:
-    type: "object"
-    required:
-      - "leaveDayDuration"
-      - "date"
-    properties:
-      leaveDayDuration:
-        type: string
-        enum: [HALF, FULL]
-      date:
-        type: string
-        format: date
-        example: "04-23-21"
-  PastLeaveChangeRequest:
-    type: "object"
-    required:
+components:
+  schemas:
+    Leave:
+      type: "object"
+      required:
+      - "employeeUIN"
+      - "supervisorUIN"
       - "description"
-    properties:
-      referencedLeave:
-        type: "string"
-        format: "uuid"
-      description:
-        type: "string"
-  Person:
-    type: "object"
-    properties:
-      NetId:
-        type: "string"
-      UIN:
-        type: "integer"
-        format: "int32"
-      Role:
-        type: "string"
-        enum: [EMPLOYEE, WORK_ADMIN, HR_ADMIN]
-      Department:
-        type: "string"
-      Supervisor:
-        $ref: "#/definitions/Person"
-      Reports:
-        type: "array"
-        items:
-          $ref: "#/definitions/Person"
-  PersonProfile:
-    type: "object"
-    properties:
-      UIN:
-        type: "integer"
-        format: "int32"
-      futureLeaveColor:
-        type: "string"
-      pastLeaveColor:
-        type: "string"
-      preferredColors:
-        type: "array"
-        items:
+      - "title"
+      - "isApproved"
+      - "days"
+      properties:
+        employeeUIN:
           type: "string"
-      preferDayDisplay:
-        type: "boolean"
-      ChosenReports:
-        type: "array"
-        items:
-          $ref: "#/definitions/Person"
+          format: "uuid"
+        supervisorUIN:
+          type: "integer"
+          format: "int64"
+        description:
+          type: "string"
+          example: "Summer Vacation"
+        title:
+          type: "string"
+          example: "June Leave"
+        isApproved:
+          type: "boolean"
+        days:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/LeaveDay"
+    LeaveDay:
+      type: "object"
+      required:
+        - "leaveDayDuration"
+        - "date"
+      properties:
+        leaveDayDuration:
+          type: string
+          enum: [HALF, FULL]
+        date:
+          type: string
+          format: date
+          example: "04-23-21"
+    PastLeaveChangeRequest:
+      type: "object"
+      required:
+        - "description"
+      properties:
+        referencedLeave:
+          type: "string"
+          format: "uuid"
+        description:
+          type: "string"
+    Person:
+      type: "object"
+      properties:
+        NetId:
+          type: "string"
+        UIN:
+          type: "integer"
+          format: "int32"
+        Role:
+          type: "string"
+          enum: [EMPLOYEE, WORK_ADMIN, HR_ADMIN]
+        Department:
+          type: "string"
+        Supervisor:
+          $ref: "#/components/schemas/Person"
+        Reports:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Person"
+    PersonProfile:
+      type: "object"
+      properties:
+        UIN:
+          type: "integer"
+          format: "int32"
+        futureLeaveColor:
+          type: "string"
+        pastLeaveColor:
+          type: "string"
+        preferredColors:
+          type: "array"
+          items:
+            type: "string"
+        preferDayDisplay:
+          type: "boolean"
+        ChosenReports:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Person"
+    LeaveBalance:
+      type: "object"
+      properties:
+        total:
+          type: "number"
+          format: "float"
 externalDocs:
   description: "Find out more about Swagger"
   url: "http://swagger.io"
