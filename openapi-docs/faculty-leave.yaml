@@ -13,7 +13,6 @@ externalDocs:
   url: http://swagger.io
 servers:
 - url: https://github.com/TAMULib/FacultyLeave
-- url: http://github.com/TAMULib/FacultyLeave
 paths:
   /leave:
     get:
@@ -29,7 +28,7 @@ paths:
       parameters:
       - name: ids
         in: query
-        description: Comma seperated string of ids to return
+        description: Comma separated string of leave request ids
         schema:
           type: string
       - name: departmentName
