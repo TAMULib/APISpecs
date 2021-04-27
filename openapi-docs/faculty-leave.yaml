@@ -1,6 +1,6 @@
 openapi: 3.0.1
 info:
-  title: FacultyLeave API Specefication
+  title: FacultyLeave API Specification
   description: The API Specification for Texas A&M Libraries FacultyLeave Application
   contact:
     email: tamulib-admin@library.tamu.edu
