@@ -22,6 +22,10 @@ paths:
       summary: Get a list of requests for leave.
       description: Get a list of requests for leave.
       operationId: getLeave
+      security:
+        - spring_session: [
+          Employee, WorkAdmin, or HRAdmin
+        ]
       parameters:
       - name: ids
         in: query
@@ -57,6 +61,10 @@ paths:
       summary: Add a new request for leave.
       description: Add a new request for leave.
       operationId: addLeave
+      security:
+        - spring_session: [
+          Employee, WorkAdmin, or HRAdmin
+        ]
       requestBody:
         description: Leave object describing the requested leave.
         content:
@@ -88,6 +96,10 @@ paths:
       summary: Get a request for leave by id
       description: Get a list of requests for leave.
       operationId: getLeaveById
+      security:
+        - spring_session: [
+          Employee, WorkAdmin, or HRAdmin
+        ]
       parameters:
       - name: id
         in: path
@@ -118,6 +130,10 @@ paths:
       summary: Update an existing leave request
       description: Update an existing leave request
       operationId: updateLeave
+      security:
+        - spring_session: [
+          WorkAdmin, or HRAdmin
+        ]
       parameters:
       - name: id
         in: path
@@ -160,6 +176,10 @@ paths:
       summary: Modify a leave request with approval.
       description: Modify a leave request with approval.
       operationId: updateLeaveApproval
+      security:
+        - spring_session: [
+          WorkAdmin, or HRAdmin
+        ]
       parameters:
       - name: id
         in: path
@@ -190,6 +210,10 @@ paths:
       summary: Modify a leave request with rejection.
       description: Modify a leave request with approval.
       operationId: updateLeaveRejection
+      security:
+        - spring_session: [
+          WorkAdmin, or HRAdmin
+        ]
       parameters:
       - name: id
         in: path
@@ -220,6 +244,10 @@ paths:
       summary: Cancels a leave request.
       description: Cancels a leave request.
       operationId: cancelLeaveRequest
+      security:
+        - spring_session: [
+          Employee, WorkAdmin, or HRAdmin
+        ]
       parameters:
       - name: id
         in: path
@@ -250,6 +278,10 @@ paths:
       summary: Add a new corection for an existing request for leave.
       description: Add a new corection for an existing request for leave.
       operationId: correctLeave
+      security:
+        - spring_session: [
+          Employee
+        ]
       parameters:
       - name: id
         in: path
@@ -288,6 +320,10 @@ paths:
       summary: Retrieves an employee by UIN
       description: Retrieves an employee by UIN
       operationId: getEmployee
+      security:
+        - spring_session: [
+          Employee, WorkAdmin, or HRAdmin
+        ]
       parameters:
       - name: uin
         in: path
@@ -321,6 +357,10 @@ paths:
       summary: Retrieves an employee's requested leave by UIN
       description: Retrieves an employee's requested leave by UIN
       operationId: getEmployeeLeave
+      security:
+        - spring_session: [
+          Employee, WorkAdmin, or HRAdmin
+        ]
       parameters:
       - name: uin
         in: path
@@ -356,6 +396,10 @@ paths:
       summary: Retrieves an employee's leave history by UIN
       description: Retrieves an employee's leave history by UIN
       operationId: getEmployeeHistory
+      security:
+        - spring_session: [
+          Employee, WorkAdmin, or HRAdmin
+        ]
       parameters:
       - name: uin
         in: path
@@ -396,6 +440,10 @@ paths:
       summary: Retrieves an employee's leave balance by UIN
       description: Retrieves an employee's leave balance by UIN
       operationId: getEmployeeLeaveBalance
+      security:
+        - spring_session: [
+          Employee, WorkAdmin, or HRAdmin
+        ]
       parameters:
       - name: uin
         in: path
@@ -429,6 +477,10 @@ paths:
       summary: Retrieves an employee's settings
       description: Retrieves an employee's settings
       operationId: getEmployeeSettings
+      security:
+        - spring_session: [
+          Employee, WorkAdmin, or HRAdmin
+        ]
       parameters:
       - name: uin
         in: path
@@ -461,6 +513,10 @@ paths:
       summary: Updates an employee's settings
       description: Updates an employee's settings
       operationId: putEmployeeSettings
+      security:
+        - spring_session: [
+          Employee, WorkAdmin, or HRAdmin
+        ]
       parameters:
       - name: uin
         in: path
@@ -601,15 +657,6 @@ components:
           type: number
           format: float
   securitySchemes:
-    petstore_auth:
-      type: oauth2
-      flows:
-        implicit:
-          authorizationUrl: http://petstore.swagger.io/oauth/dialog
-          scopes:
-            write:pets: modify pets in your account
-            read:pets: read your pets
-    api_key:
-      type: apiKey
-      name: api_key
-      in: header
+    spring_session:
+      type: http
+      scheme: cookie
