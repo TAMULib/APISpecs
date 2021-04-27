@@ -93,7 +93,7 @@ paths:
       tags:
       - leave
       summary: Get a request for leave by id
-      description: Get a list of requests for leave.
+      description: Get a request for leave by id
       operationId: getLeaveById
       security:
         - spring_session: [
@@ -207,7 +207,7 @@ paths:
       tags:
       - leave
       summary: Modify a leave request with rejection.
-      description: Modify a leave request with approval.
+      description: Modify a leave request with rejection.
       operationId: updateLeaveRejection
       security:
         - spring_session: [
@@ -274,8 +274,8 @@ paths:
     post:
       tags:
       - leave
-      summary: Add a new corection for an existing request for leave.
-      description: Add a new corection for an existing request for leave.
+      summary: Request a correction for an existing request for leave.
+      description: Request a correction for an existing request for leave.
       operationId: correctLeave
       security:
         - spring_session: [
@@ -297,13 +297,13 @@ paths:
         required: true
       responses:
         201:
-          description: Leave Request Created
+          description: Correction Request Created
           content: {}
         401:
-          description: You are not authorized to create a leave request
+          description: You are not authorized to create a correction request
           content: {}
         403:
-          description: You are forbidden to create a leave request
+          description: You are forbidden to create a correction request
           content: {}
         422:
           description: The requested leave is an unprocessable entity
@@ -353,8 +353,8 @@ paths:
     get:
       tags:
       - employees
-      summary: Retrieves an employee's requested leave by UIN
-      description: Retrieves an employee's requested leave by UIN
+      summary: Retrieves a list of an employee's requested leave by UIN
+      description: Retrieves a list of an employee's requested leave by UIN
       operationId: getEmployeeLeave
       security:
         - spring_session: [
@@ -452,7 +452,7 @@ paths:
           format: uuid
       responses:
         200:
-          description: Employee Leave History Found
+          description: Employee Leave Balance Found
           content:
             application/json:
               schema:
@@ -657,5 +657,6 @@ components:
           format: float
   securitySchemes:
     spring_session:
-      type: http
-      scheme: cookie
+      type: apiKey
+      in: cookie
+      name: JSESSIONID
