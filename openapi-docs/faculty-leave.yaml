@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: FacultyLeave API Specefication
-  description: The API Specefication for Texas A&M Libraries FacultyLeave Application
+  description: The API Specification for Texas A&M Libraries FacultyLeave Application
   contact:
     email: tamulib-admin@library.tamu.edu
   license:
@@ -18,8 +18,8 @@ paths:
     get:
       tags:
       - leave
-      summary: Get a list of requests for leave.
-      description: Get a list of requests for leave.
+      summary: Get a list of requests for leave
+      description: Get a list of requests for leave
       operationId: getLeave
       security:
         - spring_session: [
@@ -57,15 +57,15 @@ paths:
     post:
       tags:
       - leave
-      summary: Add a new request for leave.
-      description: Add a new request for leave.
+      summary: Add a new request for leave
+      description: Add a new request for leave
       operationId: addLeave
       security:
         - spring_session: [
           Employee, WorkAdmin, or HRAdmin
         ]
       requestBody:
-        description: Leave object describing the requested leave.
+        description: Leave object describing the requested leave
         content:
           application/json:
             schema:
@@ -172,8 +172,8 @@ paths:
     put:
       tags:
       - leave
-      summary: Modify a leave request with approval.
-      description: Modify a leave request with approval.
+      summary: Modify a leave request with approval
+      description: Modify a leave request with approval
       operationId: updateLeaveApproval
       security:
         - spring_session: [
@@ -206,8 +206,8 @@ paths:
     put:
       tags:
       - leave
-      summary: Modify a leave request with rejection.
-      description: Modify a leave request with rejection.
+      summary: Modify a leave request with rejection
+      description: Modify a leave request with rejection
       operationId: updateLeaveRejection
       security:
         - spring_session: [
@@ -240,8 +240,8 @@ paths:
     put:
       tags:
       - leave
-      summary: Cancels a leave request.
-      description: Cancels a leave request.
+      summary: Cancels a leave request
+      description: Cancels a leave request
       operationId: cancelLeaveRequest
       security:
         - spring_session: [
@@ -274,8 +274,8 @@ paths:
     post:
       tags:
       - leave
-      summary: Request a correction for an existing request for leave.
-      description: Request a correction for an existing request for leave.
+      summary: Request a correction for an existing request for leave
+      description: Request a correction for an existing request for leave
       operationId: correctLeave
       security:
         - spring_session: [
@@ -289,7 +289,7 @@ paths:
           type: string
           format: uuid
       requestBody:
-        description: PastLeaveChangeRequest object describing the requested changes.
+        description: PastLeaveChangeRequest object describing the requested changes
         content:
           application/json:
             schema:
@@ -338,10 +338,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Person'
         401:
-          description: You are not authorized to retrieve an employee.
+          description: You are not authorized to retrieve an employee
           content: {}
         403:
-          description: You are forbidden to retrieve an employee.
+          description: You are forbidden to retrieve an employee
           content: {}
         404:
           description: Employee Not Found
@@ -377,10 +377,10 @@ paths:
                 items:
                   $ref: '#/components/schemas/Leave'
         401:
-          description: You are not authorized to retrieve an employee's leave.
+          description: You are not authorized to retrieve an employee's leave
           content: {}
         403:
-          description: You are forbidden to retrieve an employee's leave.
+          description: You are forbidden to retrieve an employee's leave
           content: {}
         404:
           description: Employee Not Found
@@ -421,10 +421,10 @@ paths:
                 items:
                   $ref: '#/components/schemas/Leave'
         401:
-          description: You are not authorized to retrieve an employee's leave history.
+          description: You are not authorized to retrieve an employee's leave history
           content: {}
         403:
-          description: You are forbidden to retrieve an employee's leave history.
+          description: You are forbidden to retrieve an employee's leave history
           content: {}
         404:
           description: Employee Not Found
@@ -458,10 +458,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/LeaveBalance'
         401:
-          description: You are not authorized to retrieve an employee's leave balance.
+          description: You are not authorized to retrieve an employee's leave balance
           content: {}
         403:
-          description: You are forbidden to retrieve an employee's leave balance.
+          description: You are forbidden to retrieve an employee's leave balance
           content: {}
         404:
           description: Employee Not Found
@@ -495,10 +495,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/PersonProfile'
         401:
-          description: You are not authorized to retrieve an employee's settings.
+          description: You are not authorized to retrieve an employee's settings
           content: {}
         403:
-          description: You are forbidden to retrieve an employee's settings.
+          description: You are forbidden to retrieve an employee's settings
           content: {}
         404:
           description: Employee Not Found
@@ -534,13 +534,13 @@ paths:
           description: Employee Settings Updated
           content: {}
         400:
-          description: The settings object is invalid.
+          description: The settings object is invalid
           content: {}
         401:
-          description: You are not authorized to update an employee's settings.
+          description: You are not authorized to update an employee's settings
           content: {}
         403:
-          description: You are forbidden to update an employee's settings.
+          description: You are forbidden to update an employee's settings
           content: {}
         404:
           description: Employee Not Found
