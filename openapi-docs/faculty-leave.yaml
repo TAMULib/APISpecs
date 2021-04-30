@@ -312,24 +312,23 @@ paths:
           description: Internal Server Error
           content: {}
       x-codegen-request-body-name: body
-  /employees/{uin}:
+  /employees/{netId}:
     get:
       tags:
       - employees
-      summary: Retrieves an employee by UIN
-      description: Retrieves an employee by UIN
+      summary: Retrieves an employee
+      description: Retrieves an employee
       operationId: getEmployee
       security:
         - spring_session: [
           Employee, WorkAdmin, or HRAdmin
         ]
       parameters:
-      - name: uin
+      - name: netId
         in: path
         required: true
         schema:
           type: string
-          format: uuid
       responses:
         200:
           description: Employee Found
@@ -349,24 +348,23 @@ paths:
         500:
           description: Internal Server Error
           content: {}
-  /employees/{uin}/leave:
+  /employees/{netId}/leave:
     get:
       tags:
       - employees
-      summary: Retrieves a list of an employee's requested leave by UIN
-      description: Retrieves a list of an employee's requested leave by UIN
+      summary: Retrieves a list of an employee's requested leave
+      description: Retrieves a list of an employee's requested leave
       operationId: getEmployeeLeave
       security:
         - spring_session: [
           Employee, WorkAdmin, or HRAdmin
         ]
       parameters:
-      - name: uin
+      - name: netId
         in: path
         required: true
         schema:
           type: string
-          format: uuid
       responses:
         200:
           description: Employee Leave Found
@@ -388,24 +386,23 @@ paths:
         500:
           description: Internal Server Error
           content: {}
-  /employees/{uin}/history:
+  /employees/{netId}/history:
     get:
       tags:
       - employees
-      summary: Retrieves an employee's leave history by UIN
-      description: Retrieves an employee's leave history by UIN
+      summary: Retrieves an employee's leave history
+      description: Retrieves an employee's leave history
       operationId: getEmployeeHistory
       security:
         - spring_session: [
           Employee, WorkAdmin, or HRAdmin
         ]
       parameters:
-      - name: uin
+      - name: netId
         in: path
         required: true
         schema:
           type: string
-          format: uuid
       - name: timeframe
         in: query
         description: The window of time for requests
@@ -432,24 +429,23 @@ paths:
         500:
           description: Internal Server Error
           content: {}
-  /employees/{uin}/balance:
+  /employees/{netId}/balance:
     get:
       tags:
       - employees
-      summary: Retrieves an employee's leave balance by UIN
-      description: Retrieves an employee's leave balance by UIN
+      summary: Retrieves an employee's leave balance
+      description: Retrieves an employee's leave balance
       operationId: getEmployeeLeaveBalance
       security:
         - spring_session: [
           Employee, WorkAdmin, or HRAdmin
         ]
       parameters:
-      - name: uin
+      - name: netId
         in: path
         required: true
         schema:
           type: string
-          format: uuid
       responses:
         200:
           description: Employee Leave Balance Found
@@ -469,7 +465,7 @@ paths:
         500:
           description: Internal Server Error
           content: {}
-  /employees/{uin}/settings:
+  /employees/{netId}/settings:
     get:
       tags:
       - employees
@@ -481,12 +477,11 @@ paths:
           Employee, WorkAdmin, or HRAdmin
         ]
       parameters:
-      - name: uin
+      - name: netId
         in: path
         required: true
         schema:
           type: string
-          format: uuid
       responses:
         200:
           description: Employee Settings Found
@@ -517,12 +512,11 @@ paths:
           Employee, WorkAdmin, or HRAdmin
         ]
       parameters:
-      - name: uin
+      - name: netId
         in: path
         required: true
         schema:
           type: string
-          format: uuid
       requestBody:
         content:
           application/json:
@@ -557,31 +551,29 @@ components:
     Leave:
       required:
       - days
-      - description
-      - employeeUIN
-      - isApproved
-      - supervisorUIN
       - title
+      - description
+      - employeeNetId
+      - supervisorNetId
+      - isApproved
       type: object
       properties:
-        employeeUIN:
-          type: string
-          format: uuid
-        supervisorUIN:
-          type: integer
-          format: int64
-        description:
-          type: string
-          example: Summer Vacation
-        title:
-          type: string
-          example: June Leave
-        isApproved:
-          type: boolean
         days:
           type: array
           items:
             $ref: '#/components/schemas/LeaveDay'
+        title:
+          type: string
+          example: June Leave
+        description:
+          type: string
+          example: Summer Vacation
+        employeeNetId:
+          type: string
+        supervisorNetId:
+          type: string
+        isApproved:
+          type: boolean
     LeaveDay:
       required:
       - date
@@ -610,31 +602,35 @@ components:
     Person:
       type: object
       properties:
-        NetId:
-          type: string
-        UIN:
-          type: integer
-          format: int32
-        Role:
+        role:
           type: string
           enum:
           - EMPLOYEE
           - WORK_ADMIN
           - HR_ADMIN
-        Department:
+        netId:
           type: string
-        Supervisor:
+        email:
+          type: string
+        displayName:
+          type: string
+        department:
+          type: string
+        title:
+          type: string
+        position:
+          type: string
+        supervisor:
           $ref: '#/components/schemas/Person'
-        Reports:
+        reports:
           type: array
           items:
             $ref: '#/components/schemas/Person'
     PersonProfile:
       type: object
       properties:
-        UIN:
-          type: integer
-          format: int32
+        netId:
+          type: string
         futureLeaveColor:
           type: string
         pastLeaveColor:
@@ -657,6 +653,6 @@ components:
           format: float
   securitySchemes:
     spring_session:
-      type: apiKey
+      type: http
       in: cookie
       name: JSESSIONID
