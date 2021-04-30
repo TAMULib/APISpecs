@@ -621,11 +621,13 @@ components:
         position:
           type: string
         supervisor:
-          $ref: '#/components/schemas/Person'
+          type: string
+          description: netid of supervisor
         reports:
           type: array
+          description: list of netid for whom reports
           items:
-            $ref: '#/components/schemas/Person'
+            type: string
     PersonProfile:
       type: object
       properties:
