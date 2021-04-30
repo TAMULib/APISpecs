@@ -653,6 +653,6 @@ components:
           format: float
   securitySchemes:
     spring_session:
-      type: http
+      type: apiKey
       in: cookie
       name: JSESSIONID
