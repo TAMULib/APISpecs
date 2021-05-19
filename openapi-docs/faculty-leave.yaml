@@ -159,7 +159,7 @@ paths:
           description: You are forbidden to create a leave request
           content: {}
         404:
-          description: Leave request not found
+          description: Leave Not Found
           content: {}
         422:
           description: The requested leave is an unprocessable entity
@@ -312,6 +312,7 @@ paths:
           description: Internal Server Error
           content: {}
       x-codegen-request-body-name: body
+
   /employees/{netId}:
     get:
       tags:
@@ -335,7 +336,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Person'
+                $ref: '#/components/schemas/Employee'
         401:
           description: You are not authorized to retrieve an employee
           content: {}
@@ -553,9 +554,13 @@ components:
       - days
       - title
       - description
+      - department
       - employeeNetId
       - supervisorNetId
       - isApproved
+      - approvalStatus
+      - startDate
+      - endDate
       type: object
       properties:
         days:
@@ -574,13 +579,21 @@ components:
           type: string
         isApproved:
           type: boolean
+        approvalStatus:
+          type: object
+        startDate:
+          type: string
+          format: Date
+        endDate:
+          type: string
+          format: Date
     LeaveDay:
       required:
       - date
-      - leaveDayDuration
+      - leaveDayInterval
       type: object
       properties:
-        leaveDayDuration:
+        leaveDayInterval:
           type: string
           enum:
           - HALF
@@ -599,7 +612,7 @@ components:
           format: uuid
         description:
           type: string
-    Person:
+    Employee:
       type: object
       properties:
         role:
@@ -646,7 +659,7 @@ components:
         ChosenReports:
           type: array
           items:
-            $ref: '#/components/schemas/Person'
+            $ref: '#/components/schemas/Employee'
     LeaveBalance:
       type: object
       properties:
