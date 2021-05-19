@@ -28,19 +28,36 @@ paths:
       parameters:
       - name: ids
         in: query
+        required: false
         description: Comma separated string of leave request ids
         schema:
           type: string
-      - name: departmentName
+      - name: department
         in: query
+        required: false
         description: The name of the department to retrieve requests for
         schema:
           type: string
-      - name: timeframe
+      - name: dateFrom
         in: query
+        required: false
+        description: The date when the leave begins
+        schema:
+          format: date
+          type: string
+      - name: dateTo
+        in: query
+        required: false
         description: The window of time for requests
         schema:
           type: string
+      - name: netIds
+        in: query
+        required: false
+        description: The list of netids requested for leave
+        schema:
+          type: object
+          format: List<String>
       responses:
         200:
           description: Request successful
