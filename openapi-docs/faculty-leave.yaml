@@ -730,7 +730,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PersonProfile'
+                $ref: '#/components/schemas/EmployeeProfile'
         401:
           description: You are not authorized to retrieve an employee's settings
           content: {}
@@ -748,7 +748,7 @@ paths:
       - employees
       summary: Updates an employee's settings
       description: Updates an employee's settings
-      operationId: putEmployeeSettings
+      operationId: putEmployeesSettings
       security:
         - spring_session: [
           WorkAdmin, or HRAdmin
