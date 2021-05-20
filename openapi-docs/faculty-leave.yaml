@@ -370,7 +370,7 @@ paths:
           description: Internal Server Error
           content: {}
   /employee:
-    get:
+    post:
       tags:
       - employee
       summary: Request employee leave
@@ -380,21 +380,6 @@ paths:
         - spring_session: [
           Employee, WorkAdmin, or HRAdmin
         ]
-      parameters:
-      - name: leave
-        in: path
-        description: Leave object to be created
-        required: true
-        schema:
-          type: object
-          format: LeaveDTO
-      requestBody:
-        description: Leave object to create employee leave request
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Leave'
-        required: true
       responses:
         201:
           description: Leave creation successful
