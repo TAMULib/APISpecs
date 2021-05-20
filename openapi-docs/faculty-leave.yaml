@@ -369,7 +369,7 @@ paths:
         500:
           description: Internal Server Error
           content: {}
-  /employee:
+  /employee/leave:
     post:
       tags:
       - employee
@@ -393,7 +393,88 @@ paths:
         500:
           description: Internal Server Error
           content: {}
-
+    get:
+      tags:
+      - employee
+      summary: Get description of the employee leave
+      description: Get description of the employee leave
+      operationId: getEmployeeLeave
+      security:
+        - spring_session: [
+          WorkAdmin, or HRAdmin
+        ]
+      parameters:
+      - name: dateFrom
+        in: query
+        required: false
+        description: The date when the employee leave begins
+        schema:
+          format: date
+          type: string
+      - name: dateTo
+        in: query
+        required: false
+        description: The date when the employee leave ends
+        schema:
+          type: string
+      responses:
+        200:
+          description: Request successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Leave'
+        400:
+          description: The request was invalid
+          content: {}
+        500:
+          description: Internal Server Error
+          content: {}
+  /employee/leave/{id}/correction:
+    post:
+      tags:
+      - employee
+      summary: Request a correction for an existing leave by netid
+      description: Request a correction for an existing leave by netid
+      operationId: employeePostPastLeaveCorrection
+      security:
+        - spring_session: [
+          WorkAdmin, HRAdmin
+        ]
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        description: PastLeaveChangeRequest object describing the requested changes
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PastLeaveChangeRequest'
+        required: true
+      responses:
+        201:
+          description: Employee Leave Correction Request Created
+          content: {}
+        401:
+          description: You are not authorized to create correction requests for this leave
+          content: {}
+        403:
+          description: You are forbidden to create a correction request
+          content: {}
+        404:
+          description:  Leave not found
+          content: {}
+        422:
+          description: The requested leave is an unprocessable entity
+          content: {}
+        500:
+          description: Internal Server Error
+          content: {}
+      x-codegen-request-body-name: body
   /employees:
     get:
       tags:
@@ -469,7 +550,7 @@ paths:
       - employees
       summary: Retrieves a list of an employee's requested leave
       description: Retrieves a list of an employee's requested leave
-      operationId: getEmployeeLeave
+      operationId: getEmployeesLeave
       security:
         - spring_session: [
           Employee, WorkAdmin, or HRAdmin
