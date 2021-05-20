@@ -475,6 +475,52 @@ paths:
           description: Internal Server Error
           content: {}
       x-codegen-request-body-name: body
+  /employee/settings:
+    put:
+      tags:
+      - employee
+      summary: Updates an employee's settings
+      description: Updates an employee's settings
+      operationId: putEmployeeSettings
+      security:
+        - spring_session: [
+          Employee, WorkAdmin, or HRAdmin
+        ]
+      parameters:
+      - name: employee
+        in: path
+        required: true
+        schema:
+          type: object
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeProfile'
+        required: true
+      responses:
+        204:
+          description: Employee Settings Updated
+          content: {}
+        400:
+          description: The settings object is invalid
+          content: {}
+        401:
+          description: You are not authorized to update an employee's settings
+          content: {}
+        403:
+          description: You are forbidden to update an employee's settings
+          content: {}
+        404:
+          description: Employee Not Found
+          content: {}
+        422:
+          description: The settings object is an unprocessable entity
+          content: {}
+        500:
+          description: Internal Server Error
+          content: {}
+      x-codegen-request-body-name: settings
   /employees:
     get:
       tags:
@@ -717,7 +763,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PersonProfile'
+              $ref: '#/components/schemas/EmployeeProfile'
         required: true
       responses:
         204:
@@ -836,11 +882,9 @@ components:
           description: list of netid for whom reports
           items:
             type: string
-    PersonProfile:
+    EmployeeProfile:
       type: object
       properties:
-        netId:
-          type: string
         futureLeaveColor:
           type: string
         pastLeaveColor:
@@ -851,10 +895,10 @@ components:
             type: string
         preferDayDisplay:
           type: boolean
-        ChosenReports:
+        chosedReports:
           type: array
           items:
-            $ref: '#/components/schemas/Employee'
+            type: string
     LeaveBalance:
       type: object
       properties:
