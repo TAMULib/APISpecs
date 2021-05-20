@@ -48,7 +48,7 @@ paths:
       - name: dateTo
         in: query
         required: false
-        description: The window of time for requests
+        description: The date when the leave ends
         schema:
           type: string
       - name: netIds
@@ -135,7 +135,7 @@ paths:
           description: The request was invalid
           content: {}
         404:
-          description: The leave request was not found
+          description: Leave Not Found
           content: {}
         500:
           description: Internal Server Error
@@ -185,6 +185,43 @@ paths:
           description: Internal Server Error
           content: {}
       x-codegen-request-body-name: body
+    delete:
+      tags:
+      - leave
+      summary: Delete an existing leave request
+      description: Delete an existing leave request
+      operationId: deleteLeave
+      security:
+        - spring_session: [
+          WorkAdmin, or HRAdmin
+        ]
+      parameters:
+      - name: id
+        in: path
+        description: ID of leave request to be deleted
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        204:
+          description: Leave Request Deleted
+          content: {}
+        401:
+          description: You are not authorized to create a leave request
+          content: {}
+        403:
+          description: You are forbidden to create a leave request
+          content: {}
+        404:
+          description: Leave Not Found
+          content: {}
+        422:
+          description: The requested leave is an unprocessable entity
+          content: {}
+        500:
+          description: Internal Server Error
+          content: {}
   /leave/{id}/approve:
     put:
       tags:
@@ -214,7 +251,7 @@ paths:
           description: You are forbidden to approve a leave request
           content: {}
         404:
-          description: Leave request not found
+          description: Leave not found
           content: {}
         500:
           description: Internal Server Error
@@ -248,41 +285,7 @@ paths:
           description: You are forbidden to reject a leave request
           content: {}
         404:
-          description: Leave request not found
-          content: {}
-        500:
-          description: Internal Server Error
-          content: {}
-  /leave/{id}/cancel:
-    put:
-      tags:
-      - leave
-      summary: Cancels a leave request
-      description: Cancels a leave request
-      operationId: cancelLeaveRequest
-      security:
-        - spring_session: [
-          Employee, WorkAdmin, or HRAdmin
-        ]
-      parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: string
-          format: uuid
-      responses:
-        204:
-          description: The leave request has been canceled
-          content: {}
-        401:
-          description: You are not authorized to cancel a leave request
-          content: {}
-        403:
-          description: You are forbidden to cancel a leave request
-          content: {}
-        404:
-          description: Leave request not found
+          description: Leave not found
           content: {}
         500:
           description: Internal Server Error
@@ -322,6 +325,9 @@ paths:
         403:
           description: You are forbidden to create a correction request
           content: {}
+        404:
+          description:  Leave not found
+          content: {}
         422:
           description: The requested leave is an unprocessable entity
           content: {}
@@ -329,7 +335,40 @@ paths:
           description: Internal Server Error
           content: {}
       x-codegen-request-body-name: body
-
+    get:
+      tags:
+      - leave
+      summary: Gets the corrected request for leave by id
+      description: Gets the corrected request for leave by id
+      operationId: getPastLeaveChangeRequest
+      security:
+        - spring_session: [
+          WorkAdmin, or HRAdmin
+        ]
+      parameters:
+      - name: id
+        in: path
+        description: ID of leave request to be updated
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        200:
+          description: Request successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Leave'
+        400:
+          description: The request was invalid
+          content: {}
+        404:
+          description: Leave Not Found
+          content: {}
+        500:
+          description: Internal Server Error
+          content: {}
   /employees/{netId}:
     get:
       tags:
@@ -618,7 +657,7 @@ components:
         date:
           type: string
           format: date
-          example: 0005-11-21
+          example: "0005-11-21"
     PastLeaveChangeRequest:
       required:
       - description
