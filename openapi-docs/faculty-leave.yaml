@@ -79,7 +79,7 @@ paths:
       operationId: addLeave
       security:
         - spring_session: [
-          Employee, WorkAdmin, or HRAdmin
+          WorkAdmin, or HRAdmin
         ]
       requestBody:
         description: Leave object describing the requested leave
@@ -114,7 +114,7 @@ paths:
       operationId: getLeaveById
       security:
         - spring_session: [
-          Employee, WorkAdmin, or HRAdmin
+          WorkAdmin, or HRAdmin
         ]
       parameters:
       - name: id
@@ -369,16 +369,89 @@ paths:
         500:
           description: Internal Server Error
           content: {}
+  /employee:
+    get:
+      tags:
+      - employee
+      summary: Request employee leave
+      description: Request employee leave
+      operationId: createEmployeeLeave
+      security:
+        - spring_session: [
+          Employee, WorkAdmin, or HRAdmin
+        ]
+      parameters:
+      - name: leave
+        in: path
+        description: Leave object to be created
+        required: true
+        schema:
+          type: object
+          format: LeaveDTO
+      requestBody:
+        description: Leave object to create employee leave request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Leave'
+        required: true
+      responses:
+        201:
+          description: Leave creation successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Leave'
+        400:
+          description: The request was invalid
+          content: {}
+        500:
+          description: Internal Server Error
+          content: {}
+
+  /employees:
+    get:
+      tags:
+      - employees
+      summary: Get a list of employees by netIds
+      description: Get a list of employees by netIds
+      operationId: getEmployees
+      security:
+        - spring_session: [
+          WorkAdmin, or HRAdmin
+        ]
+      responses:
+        200:
+          description: Request successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employee'
+        400:
+          description: The request was invalid
+          content: {}
+        401:
+          description: You are not authorized to retrieve an employee
+          content: {}
+        403:
+          description: You are forbidden to retrieve an employee
+          content: {}
+        404:
+          description: Employee Not Found
+          content: {}
+        500:
+          description: Internal Server Error
+          content: {}
   /employees/{netId}:
     get:
       tags:
       - employees
-      summary: Retrieves an employee
-      description: Retrieves an employee
+      summary: Retrieves an employee by netId
+      description: Retrieves an employee by netId
       operationId: getEmployee
       security:
         - spring_session: [
-          Employee, WorkAdmin, or HRAdmin
+          WorkAdmin, or HRAdmin
         ]
       parameters:
       - name: netId
@@ -452,7 +525,7 @@ paths:
       operationId: getEmployeeHistory
       security:
         - spring_session: [
-          Employee, WorkAdmin, or HRAdmin
+          WorkAdmin, or HRAdmin
         ]
       parameters:
       - name: netId
@@ -495,7 +568,7 @@ paths:
       operationId: getEmployeeLeaveBalance
       security:
         - spring_session: [
-          Employee, WorkAdmin, or HRAdmin
+          WorkAdmin, or HRAdmin
         ]
       parameters:
       - name: netId
@@ -531,7 +604,7 @@ paths:
       operationId: getEmployeeSettings
       security:
         - spring_session: [
-          Employee, WorkAdmin, or HRAdmin
+          WorkAdmin, or HRAdmin
         ]
       parameters:
       - name: netId
@@ -566,7 +639,7 @@ paths:
       operationId: putEmployeeSettings
       security:
         - spring_session: [
-          Employee, WorkAdmin, or HRAdmin
+          WorkAdmin, or HRAdmin
         ]
       parameters:
       - name: netId
