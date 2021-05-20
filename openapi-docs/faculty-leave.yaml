@@ -28,19 +28,36 @@ paths:
       parameters:
       - name: ids
         in: query
+        required: false
         description: Comma separated string of leave request ids
         schema:
           type: string
-      - name: departmentName
+      - name: department
         in: query
+        required: false
         description: The name of the department to retrieve requests for
         schema:
           type: string
-      - name: timeframe
+      - name: dateFrom
         in: query
-        description: The window of time for requests
+        required: false
+        description: The date when the leave begins
+        schema:
+          format: date
+          type: string
+      - name: dateTo
+        in: query
+        required: false
+        description: The date when the leave ends
         schema:
           type: string
+      - name: netIds
+        in: query
+        required: false
+        description: The list of netids requested for leave
+        schema:
+          type: object
+          format: List<String>
       responses:
         200:
           description: Request successful
@@ -62,7 +79,7 @@ paths:
       operationId: addLeave
       security:
         - spring_session: [
-          Employee, WorkAdmin, or HRAdmin
+          WorkAdmin, or HRAdmin
         ]
       requestBody:
         description: Leave object describing the requested leave
@@ -97,7 +114,7 @@ paths:
       operationId: getLeaveById
       security:
         - spring_session: [
-          Employee, WorkAdmin, or HRAdmin
+          WorkAdmin, or HRAdmin
         ]
       parameters:
       - name: id
@@ -118,7 +135,7 @@ paths:
           description: The request was invalid
           content: {}
         404:
-          description: The leave request was not found
+          description: Leave Not Found
           content: {}
         500:
           description: Internal Server Error
@@ -159,7 +176,7 @@ paths:
           description: You are forbidden to create a leave request
           content: {}
         404:
-          description: Leave request not found
+          description: Leave Not Found
           content: {}
         422:
           description: The requested leave is an unprocessable entity
@@ -168,6 +185,43 @@ paths:
           description: Internal Server Error
           content: {}
       x-codegen-request-body-name: body
+    delete:
+      tags:
+      - leave
+      summary: Delete an existing leave request
+      description: Delete an existing leave request
+      operationId: deleteLeave
+      security:
+        - spring_session: [
+          WorkAdmin, or HRAdmin
+        ]
+      parameters:
+      - name: id
+        in: path
+        description: ID of leave request to be deleted
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        204:
+          description: Leave Request Deleted
+          content: {}
+        401:
+          description: You are not authorized to create a leave request
+          content: {}
+        403:
+          description: You are forbidden to create a leave request
+          content: {}
+        404:
+          description: Leave Not Found
+          content: {}
+        422:
+          description: The requested leave is an unprocessable entity
+          content: {}
+        500:
+          description: Internal Server Error
+          content: {}
   /leave/{id}/approve:
     put:
       tags:
@@ -197,7 +251,7 @@ paths:
           description: You are forbidden to approve a leave request
           content: {}
         404:
-          description: Leave request not found
+          description: Leave not found
           content: {}
         500:
           description: Internal Server Error
@@ -231,41 +285,7 @@ paths:
           description: You are forbidden to reject a leave request
           content: {}
         404:
-          description: Leave request not found
-          content: {}
-        500:
-          description: Internal Server Error
-          content: {}
-  /leave/{id}/cancel:
-    put:
-      tags:
-      - leave
-      summary: Cancels a leave request
-      description: Cancels a leave request
-      operationId: cancelLeaveRequest
-      security:
-        - spring_session: [
-          Employee, WorkAdmin, or HRAdmin
-        ]
-      parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: string
-          format: uuid
-      responses:
-        204:
-          description: The leave request has been canceled
-          content: {}
-        401:
-          description: You are not authorized to cancel a leave request
-          content: {}
-        403:
-          description: You are forbidden to cancel a leave request
-          content: {}
-        404:
-          description: Leave request not found
+          description: Leave not found
           content: {}
         500:
           description: Internal Server Error
@@ -305,6 +325,9 @@ paths:
         403:
           description: You are forbidden to create a correction request
           content: {}
+        404:
+          description:  Leave not found
+          content: {}
         422:
           description: The requested leave is an unprocessable entity
           content: {}
@@ -312,16 +335,235 @@ paths:
           description: Internal Server Error
           content: {}
       x-codegen-request-body-name: body
+    get:
+      tags:
+      - leave
+      summary: Gets the corrected request for leave by id
+      description: Gets the corrected request for leave by id
+      operationId: getPastLeaveChangeRequest
+      security:
+        - spring_session: [
+          WorkAdmin, or HRAdmin
+        ]
+      parameters:
+      - name: id
+        in: path
+        description: ID of leave request to be updated
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        200:
+          description: Request successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Leave'
+        400:
+          description: The request was invalid
+          content: {}
+        404:
+          description: Leave Not Found
+          content: {}
+        500:
+          description: Internal Server Error
+          content: {}
+  /employee/leave:
+    post:
+      tags:
+      - employee
+      summary: Request employee leave
+      description: Request employee leave
+      operationId: createEmployeeLeave
+      security:
+        - spring_session: [
+          Employee, WorkAdmin, or HRAdmin
+        ]
+      responses:
+        201:
+          description: Leave creation successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Leave'
+        400:
+          description: The request was invalid
+          content: {}
+        500:
+          description: Internal Server Error
+          content: {}
+    get:
+      tags:
+      - employee
+      summary: Get description of the employee leave
+      description: Get description of the employee leave
+      operationId: getEmployeeLeave
+      security:
+        - spring_session: [
+          WorkAdmin, or HRAdmin
+        ]
+      parameters:
+      - name: dateFrom
+        in: query
+        required: false
+        description: The date when the employee leave begins
+        schema:
+          format: date
+          type: string
+      - name: dateTo
+        in: query
+        required: false
+        description: The date when the employee leave ends
+        schema:
+          type: string
+      responses:
+        200:
+          description: Request successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Leave'
+        400:
+          description: The request was invalid
+          content: {}
+        500:
+          description: Internal Server Error
+          content: {}
+  /employee/leave/{id}/correction:
+    post:
+      tags:
+      - employee
+      summary: Request a correction for an existing leave by netid
+      description: Request a correction for an existing leave by netid
+      operationId: employeePostPastLeaveCorrection
+      security:
+        - spring_session: [
+          WorkAdmin, HRAdmin
+        ]
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        description: PastLeaveChangeRequest object describing the requested changes
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PastLeaveChangeRequest'
+        required: true
+      responses:
+        201:
+          description: Employee Leave Correction Request Created
+          content: {}
+        401:
+          description: You are not authorized to create correction requests for this leave
+          content: {}
+        403:
+          description: You are forbidden to create a correction request
+          content: {}
+        404:
+          description:  Leave not found
+          content: {}
+        422:
+          description: The requested leave is an unprocessable entity
+          content: {}
+        500:
+          description: Internal Server Error
+          content: {}
+      x-codegen-request-body-name: body
+  /employee/settings:
+    put:
+      tags:
+      - employee
+      summary: Updates an employee's settings
+      description: Updates an employee's settings
+      operationId: putEmployeeSettings
+      security:
+        - spring_session: [
+          Employee, WorkAdmin, or HRAdmin
+        ]
+      parameters:
+      - name: employee
+        in: path
+        required: true
+        schema:
+          type: object
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeProfile'
+        required: true
+      responses:
+        204:
+          description: Employee Settings Updated
+          content: {}
+        400:
+          description: The settings object is invalid
+          content: {}
+        401:
+          description: You are not authorized to update an employee's settings
+          content: {}
+        403:
+          description: You are forbidden to update an employee's settings
+          content: {}
+        404:
+          description: Employee Not Found
+          content: {}
+        422:
+          description: The settings object is an unprocessable entity
+          content: {}
+        500:
+          description: Internal Server Error
+          content: {}
+      x-codegen-request-body-name: settings
+  /employees:
+    get:
+      tags:
+      - employees
+      summary: Get a list of employees by netIds
+      description: Get a list of employees by netIds
+      operationId: getEmployees
+      security:
+        - spring_session: [
+          WorkAdmin, or HRAdmin
+        ]
+      responses:
+        200:
+          description: Request successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employee'
+        400:
+          description: The request was invalid
+          content: {}
+        401:
+          description: You are not authorized to retrieve an employee
+          content: {}
+        403:
+          description: You are forbidden to retrieve an employee
+          content: {}
+        404:
+          description: Employee Not Found
+          content: {}
+        500:
+          description: Internal Server Error
+          content: {}
   /employees/{netId}:
     get:
       tags:
       - employees
-      summary: Retrieves an employee
-      description: Retrieves an employee
+      summary: Retrieves an employee by netId
+      description: Retrieves an employee by netId
       operationId: getEmployee
       security:
         - spring_session: [
-          Employee, WorkAdmin, or HRAdmin
+          WorkAdmin, or HRAdmin
         ]
       parameters:
       - name: netId
@@ -335,7 +577,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Person'
+                $ref: '#/components/schemas/Employee'
         401:
           description: You are not authorized to retrieve an employee
           content: {}
@@ -354,7 +596,7 @@ paths:
       - employees
       summary: Retrieves a list of an employee's requested leave
       description: Retrieves a list of an employee's requested leave
-      operationId: getEmployeeLeave
+      operationId: getEmployeesLeave
       security:
         - spring_session: [
           Employee, WorkAdmin, or HRAdmin
@@ -395,7 +637,7 @@ paths:
       operationId: getEmployeeHistory
       security:
         - spring_session: [
-          Employee, WorkAdmin, or HRAdmin
+          WorkAdmin, or HRAdmin
         ]
       parameters:
       - name: netId
@@ -438,7 +680,7 @@ paths:
       operationId: getEmployeeLeaveBalance
       security:
         - spring_session: [
-          Employee, WorkAdmin, or HRAdmin
+          WorkAdmin, or HRAdmin
         ]
       parameters:
       - name: netId
@@ -474,7 +716,7 @@ paths:
       operationId: getEmployeeSettings
       security:
         - spring_session: [
-          Employee, WorkAdmin, or HRAdmin
+          WorkAdmin, or HRAdmin
         ]
       parameters:
       - name: netId
@@ -488,7 +730,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PersonProfile'
+                $ref: '#/components/schemas/EmployeeProfile'
         401:
           description: You are not authorized to retrieve an employee's settings
           content: {}
@@ -506,10 +748,10 @@ paths:
       - employees
       summary: Updates an employee's settings
       description: Updates an employee's settings
-      operationId: putEmployeeSettings
+      operationId: putEmployeesSettings
       security:
         - spring_session: [
-          Employee, WorkAdmin, or HRAdmin
+          WorkAdmin, or HRAdmin
         ]
       parameters:
       - name: netId
@@ -521,7 +763,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PersonProfile'
+              $ref: '#/components/schemas/EmployeeProfile'
         required: true
       responses:
         204:
@@ -553,9 +795,13 @@ components:
       - days
       - title
       - description
+      - department
       - employeeNetId
       - supervisorNetId
       - isApproved
+      - approvalStatus
+      - startDate
+      - endDate
       type: object
       properties:
         days:
@@ -574,13 +820,21 @@ components:
           type: string
         isApproved:
           type: boolean
+        approvalStatus:
+          type: object
+        startDate:
+          type: string
+          format: Date
+        endDate:
+          type: string
+          format: Date
     LeaveDay:
       required:
       - date
-      - leaveDayDuration
+      - leaveDayInterval
       type: object
       properties:
-        leaveDayDuration:
+        leaveDayInterval:
           type: string
           enum:
           - HALF
@@ -588,7 +842,7 @@ components:
         date:
           type: string
           format: date
-          example: 0005-11-21
+          example: "0005-11-21"
     PastLeaveChangeRequest:
       required:
       - description
@@ -599,7 +853,7 @@ components:
           format: uuid
         description:
           type: string
-    Person:
+    Employee:
       type: object
       properties:
         role:
@@ -628,11 +882,9 @@ components:
           description: list of netid for whom reports
           items:
             type: string
-    PersonProfile:
+    EmployeeProfile:
       type: object
       properties:
-        netId:
-          type: string
         futureLeaveColor:
           type: string
         pastLeaveColor:
@@ -643,10 +895,10 @@ components:
             type: string
         preferDayDisplay:
           type: boolean
-        ChosenReports:
+        chosedReports:
           type: array
           items:
-            $ref: '#/components/schemas/Person'
+            type: string
     LeaveBalance:
       type: object
       properties:
