@@ -1,0 +1,91 @@
+openapi: 3.0.1
+info:
+  title: Tamu Library Components API Specification
+  description: The API Specification for TAMU Library Components
+  version: 2.0.1
+  contact:
+    email: tamulib-admin@library.tamu.edu
+servers:
+- url: https://github.com/TAMULib/DirectoryService
+paths:
+  /ldap/all-sorted
+    get:
+      tags:
+      - allSortedLdapUsers
+      operationId: allSortedLdapUsers
+      summary: Get a sorted list of all ldap users
+      description: Returns a list of ldap users      
+      parameters:
+        - filterWrapper
+        required: false
+      responses:
+        'SUCCESS'
+        description: "Your request was successful"
+        content:
+          application/json
+            examples:
+              {
+                "meta": {
+                    "status": "SUCCESS",
+                    "action": null,
+                    "message": "Your request was successful",
+                    "id": null
+                },
+                "payload": {
+                    "ArrayList<LdapUser>": [
+                        {
+                            "netId": "aggieJack",
+                            "employeeNumber": 0,
+                            "firstName": "Aggie",
+                            "lastName": "Jack",
+                            "displayName": "Aggie Jack",
+                            "fullName": "Aggie Jack",
+                            "nickName": null,
+                            "title": "Aggie Jack I",
+                            "position": "Staff",
+                            "department": "DI",
+                            "email": "aggiejack@tamu.edu",
+                            "phone": "(979) 000-0000",
+                            "building": "Aggieland",
+                            "office": null,
+                            "userAccountControl": 512,
+                            "contentPublished": false
+                        }           
+                    ]
+                }
+              }
+  /ldap/departments:
+    get:
+      tags:
+        - "ldap"
+      operationId: allSortedLdapDepartments
+      summary: "Returns list of all departments"
+      response:
+        'SUCCESS'
+        description: "Your request was successful"
+        content:
+          application/json
+        examples:
+          {
+              "meta": {
+                  "status": "SUCCESS",
+                  "action": null,
+                  "message": "Your request was successful",
+                  "id": null
+              },
+              "payload": {
+                  "LinkedList": [
+                      {
+                          "query": "OU=Administration Services,OU=Medical Sciences Library,OU=UserAccounts,DC=library,DC=tamu,DC=edu",
+                          "group": null,
+                          "name": "Administration Services"
+                      },
+                      {
+                          "query": "OU=Administrative Services,OU=UserAccounts,DC=library,DC=tamu,DC=edu",
+                          "group": null,
+                          "name": "Administrative Services"
+                      }
+                  ]
+              }
+          }
+
