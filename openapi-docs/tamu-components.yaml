@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.0.3
 info:
   title: Tamu Library Components API Specification
   description: The API Specification for TAMU Library Components
